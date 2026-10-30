@@ -54,15 +54,35 @@ tabs.forEach((tab) => {
 // ── Foto do "Sobre" que vira vídeo ──
 document.querySelectorAll("[data-hover-video]").forEach((box) => {
   const video = box.querySelector("video");
-  const play = () => { video.play().then(() => box.classList.add("is-playing")).catch(() => {}); };
+  const showing = () => box.classList.add("is-playing");
+  const syncSom = () => box.classList.toggle("is-mudo", video.muted);
+
+  // tenta tocar com som; se o navegador bloquear (ainda sem clique na página), toca mudo
+  const play = () => {
+    video.muted = false;
+    video.play().then(showing).catch(() => {
+      video.muted = true;
+      video.play().then(showing).catch(() => {});
+    }).finally(syncSom);
+  };
   const stop = () => { box.classList.remove("is-playing"); video.pause(); };
+
+  // um clique na foto liga o som
+  box.addEventListener("click", () => {
+    video.muted = false;
+    video.play().then(showing).catch(() => {});
+    syncSom();
+  });
 
   if (window.matchMedia("(hover: hover)").matches) {
     box.addEventListener("mouseenter", play);
     box.addEventListener("mouseleave", stop);
   } else {
-    // no celular, roda sozinho quando aparece na tela
-    new IntersectionObserver(([e]) => (e.isIntersecting ? play() : stop()), { threshold: 0.6 }).observe(box);
+    // no celular, roda sozinho (mudo) quando aparece na tela; um toque liga o som
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { video.muted = true; video.play().then(showing).catch(() => {}); syncSom(); }
+      else stop();
+    }, { threshold: 0.6 }).observe(box);
   }
 });
 
@@ -72,8 +92,9 @@ const modalBody = modal.querySelector(".modal__body");
 const modalIg = modal.querySelector(".modal__ig");
 let lastFocus = null;
 
-function openModal(content, igUrl) {
+function openModal(content, igUrl, foto = false) {
   lastFocus = document.activeElement;
+  modal.classList.toggle("modal--foto", foto);
   modalBody.replaceChildren(content);
   modalIg.hidden = !igUrl;
   if (igUrl) modalIg.href = igUrl;
@@ -88,6 +109,17 @@ function closeModal() {
   document.body.style.overflow = "";
   if (lastFocus) lastFocus.focus();
 }
+
+// lupa dos projetos: abre a foto grande, em cores
+document.querySelectorAll(".proj__img").forEach((box) => {
+  const foto = box.querySelector("img");
+  box.addEventListener("click", () => {
+    const img = document.createElement("img");
+    img.src = foto.src;
+    img.alt = foto.alt;
+    openModal(img, null, true);
+  });
+});
 
 document.querySelectorAll("[data-video]").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -129,6 +161,17 @@ document.querySelectorAll("[data-galeria]").forEach((gal) => {
   gal.querySelector(".galeria__btn--prev").addEventListener("click", () => go(-1));
   gal.querySelector(".galeria__btn--next").addEventListener("click", () => go(1));
   track.addEventListener("scroll", () => { count.textContent = `${current() + 1} / ${total}`; }, { passive: true });
+
+  // lupa: abre a foto que está na tela
+  const ampliar = () => {
+    const atual = track.children[current()];
+    const img = document.createElement("img");
+    img.src = atual.src;
+    img.alt = atual.alt;
+    openModal(img, null, true);
+  };
+  gal.querySelector(".lupa--galeria").addEventListener("click", ampliar);
+  track.addEventListener("click", ampliar);
 });
 
 // ── Ver mais registros ──

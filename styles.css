@@ -286,12 +286,12 @@ body::before {
 .tab {
   padding: 10px 22px 8px;
   font: 700 14px var(--mono);
-  background: var(--paper-2); border: 1.5px solid var(--ink); border-bottom: 0;
+  background: #fbeacb; border: 1.5px solid var(--ink); border-bottom: 0;
   border-radius: 10px 10px 0 0;
   translate: 0 1.5px;
 }
-.tab.is-active { background: var(--sheet); color: var(--coral-deep); position: relative; z-index: 2; }
-.pasta__body { border: 1.5px solid var(--ink); background: var(--sheet); padding: clamp(16px, 3vw, 32px); position: relative; }
+.tab.is-active { background: #f7d9a8; color: var(--coral-deep); position: relative; z-index: 2; }
+.pasta__body { border: 1.5px solid var(--ink); background: #f7d9a8; padding: clamp(16px, 3vw, 32px); position: relative; }
 .panel { display: none; grid-template-columns: repeat(2, 1fr); gap: 0 32px; }
 .panel.is-active { display: grid; }
 .service { display: flex; gap: 16px; padding: 22px 0; border-bottom: 1px dashed var(--line); }
@@ -583,3 +583,45 @@ body::before {
 
 /* setas: a fonte de máquina de escrever não tem esses símbolos */
 .seta { font-family: "Segoe UI Symbol", "Arial", sans-serif; font-weight: 700; }
+
+/* aviso de som no vídeo do Sobre */
+.filme { cursor: pointer; }
+.filme__som {
+  position: absolute; left: 50%; bottom: 14px; translate: -50% 0; z-index: 2;
+  font: 400 12px var(--type); white-space: nowrap;
+  background: var(--coral); color: var(--ink); padding: 6px 10px;
+  opacity: 0; transition: opacity .3s;
+}
+.filme.is-playing.is-mudo .filme__som { opacity: 1; }
+
+/* pasta de papel kraft: contraste dos textos e etiquetas */
+.pasta__body .service p { color: #3b342b; }
+.pasta__body .service h3 { text-decoration: underline; text-decoration-color: var(--coral); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.pasta__body .service { border-bottom-color: rgba(29, 28, 26, .28); }
+.pasta__body .chips li { background: #fff; border-color: var(--coral); }
+.pasta__body .num { color: var(--coral-deep); }
+
+/* lupa nas fotos dos projetos: a foto acende e dá para ampliar */
+.proj__img { cursor: zoom-in; }
+.proj:hover .proj__img img { filter: brightness(1.06) saturate(1.05); }
+.proj:hover .proj__img { box-shadow: 0 0 0 3px var(--coral); }
+.lupa {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 2;
+  width: 64px; height: 64px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--coral); color: var(--ink);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .3);
+  opacity: 0; transform: scale(.6);
+  transition: opacity .25s, transform .3s cubic-bezier(.2, .9, .3, 1.4);
+}
+.lupa svg { width: 30px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.proj:hover .lupa, .lupa:focus-visible { opacity: 1; transform: scale(1); }
+@media (hover: none) { .lupa { opacity: .9; transform: scale(.75); top: auto; bottom: 8px; left: auto; right: 8px; translate: none; } }
+.modal--foto .modal__box { width: min(1080px, 100%); }
+.modal--foto .modal__body { background: transparent; border: 0; max-height: none; }
+.modal__body img { display: block; max-width: 100%; max-height: 84vh; margin: 0 auto; border: 2px solid var(--sheet); }
+
+
+/* lupa na galeria do Percursos */
+.galeria:hover .lupa--galeria, .lupa--galeria:focus-visible { opacity: 1; transform: scale(1); }
+.galeria__track img { cursor: zoom-in; }
