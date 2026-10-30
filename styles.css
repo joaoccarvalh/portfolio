@@ -508,6 +508,7 @@ body::before {
 .modal__body iframe { display: block; width: 100%; height: min(740px, 78vh); border: 0; background: #fff; }
 .modal__close { position: absolute; top: -50px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--coral); color: var(--ink); font-size: 24px; line-height: 1; }
 .modal__ig { display: block; text-align: center; margin-top: 12px; color: var(--sheet); font-size: 14px; }
+.modal__ig[hidden] { display: none; }
 
 /* ── Reveal ── */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
